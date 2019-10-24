@@ -1,0 +1,28 @@
+{% load bootstrap4 %}
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    {% block head %}
+    <title>Data overview</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {% endblock %}
+</head>
+
+<body>
+    {% block content %}
+    <!-- Content goes here -->
+
+    {% endblock %}
+
+</body>
+
+</html>

@@ -1,0 +1,120 @@
+{% extends "scan_app/base.html" %}
+{% load bootstrap4 %}
+
+{% block head %}
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="/celery">Data overview</a>
+    </nav>
+
+    <div class="card" style="width: 100%;margin-top: 15px">
+
+        <div class="card-body">
+            <h5 class="card-title">Data</h5>
+            
+            <form action='{% url "scan" %}' method='POST'>
+                {% csrf_token %}
+                <div class="form-group">
+                    {{ form }}
+                    <button type="submit" class="btn btn-primary">Scan</button>
+                </div>
+            </form>
+            <form action='{% url "count" %}' method='POST'>
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">Count lines</button>
+                </form>
+            <table class="table" id="data-table">
+                <thead>
+                    <tr>
+                        <th scope="col">File</th>
+                        <th scope="col">Line count</th>
+                    </tr>
+                    {% for f in files %}
+                    <tr class="data">
+                        <td>{{ f }}</td>
+                        <td>0</td>
+                    </tr>
+                    {% endfor %}
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <br>
+            <label>State:</label><br>
+            <input id="state-field" value="{{ state }}" size="64">
+            <br>
+            <h5>From Django-Celery-Result DB</h5>
+            <label>Status:</label><br>
+            <input id="status-field" value="{{ status }}" size="64">
+            <br>
+            <label>Job ID:</label><br>
+            <input id="job-field" value="{{ task_id }}" size="64">
+        </div>
+
+    <!-- <div class="card" style="width: 100%;margin-top: 15px">
+            {% for r in last_result.result %}
+                <div>{{ r }}</div>
+            {% endfor %}
+        </div> -->
+    </div>
+</div>
+<script type="text/javascript">
+    var poll_xhr;
+
+    function update() {
+        var state = "{{ state }}";
+        if (state === "FINISHED" || state === "START_SCAN") {
+            poll_xhr = $.ajax({
+                url: 'update_status/?task_id={{ task_id }}',
+                type: 'GET',
+                success: function (result) {
+                    console.log(result);
+                    $('#state-field').val(result.state);
+                    $('#status-field').val(result.status);
+
+                    if (result.check_status) {
+                        setTimeout(update, 200);
+                    }
+
+                    for (const f of result.files) {
+                        $("#data-table tbody").append(
+                            "<tr>" +
+                            "<td>" + f + "</td>" +
+                            "<td>0</td>" +
+                            "</tr>"
+                        );
+                    }
+                }
+            });
+        } else {
+            poll_xhr = $.ajax({
+                url: 'update_status_count/?task_id={{ task_id }}',
+                type: 'GET',
+                success: function (result) {
+                    console.log(result);
+                    if (result.check_status) {
+                        setTimeout(update_count, 200);
+                    }
+
+                    var i = 0;
+                    $("#data-table tr.data").each(function() {
+                        $(this).children('td').eq(1).html(result.count[i]);
+                        i++;
+                    });
+
+                    $('#state-field').val(result.state);
+                    $('#status-field').val(result.status);
+                }
+            });
+        }
+    }
+
+    update();
+
+</script>
+{% endblock %}
