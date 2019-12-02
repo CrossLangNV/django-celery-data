@@ -5,4 +5,4 @@ from .models import TextFile
 class TextFileSerializer(serializers.ModelSerializer):
     class Meta:
         model = TextFile
-        fields = ('name', 'line_count')
+        fields = ('id', 'name', 'line_count')

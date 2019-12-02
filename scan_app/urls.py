@@ -4,7 +4,8 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('list', views.ListTextFiles.as_view()),
+    path('files', views.ListTextFiles.as_view()),
+    path('files/<int:pk>', views.DetailTextFile.as_view()),
     path('scan', views.do_scan, name='scan'),
     path('count', views.do_count, name='count'),
     path('update_status/', views.update_status, name='update_status'),
