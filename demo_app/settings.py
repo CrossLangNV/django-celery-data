@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'scan_app',
     'django_celery_results',
     'bootstrap4',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [

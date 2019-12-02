@@ -23,7 +23,7 @@
             <form action='{% url "count" %}' method='POST'>
                     {% csrf_token %}
                     <button type="submit" class="btn btn-primary">Count lines</button>
-                </form>
+            </form>
             <table class="table" id="data-table">
                 <thead>
                     <tr>

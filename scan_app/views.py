@@ -5,10 +5,20 @@ from celery.result import AsyncResult
 from .my_celery import scan, line_count_all
 from django.db import models
 from .models import TextFile
+from .serializers import TextFileSerializer
+from rest_framework import generics
 from django import forms
 
 class DirForm(forms.Form):
     scan_dir = forms.CharField(max_length=500)
+
+class ListTextFiles(generics.ListCreateAPIView):
+    queryset = TextFile.objects.all()
+    serializer_class = TextFileSerializer
+
+class DetailTextFile(generics.RetrieveUpdateDestroyAPIView):
+    queryset = TextFile.objects.all()
+    serializer_class = TextFileSerializer
 
 
 def index(request):
