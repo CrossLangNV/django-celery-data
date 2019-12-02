@@ -1,26 +1,56 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react';
+import { Container, Row, Col, Table } from 'reactstrap';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  state = {
+    files: []
+  };
+
+  async componentDidMount() {
+    try {
+      const res = await fetch('http://localhost:8000/celery/files');
+      const files = await res.json();
+      this.setState({
+        files
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  render() {
+    return (
+      <Container>
+        <Row>
+          <Col>
+            <h1>Files</h1>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Filename</th>
+                  <th>Number of lines</th>
+                </tr>
+              </thead>
+              <tbody>
+                {this.state.files.map(f => (
+                  <tr>
+                    <td>{f.id}</td>
+                    <td>{f.name}</td>
+                    <td>{f.line_count}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </Col>
+        </Row>
+      </Container>
+    );
+  }
 }
 
 export default App;
