@@ -123,4 +123,9 @@ def update_status_count(request):
             'state': 'COUNT_FINISHED',
             'count': result
             }
+        files = TextFile.objects.all()
+        for f, c in zip(files, result):
+            f.line_count = c
+            f.save()
+
     return JsonResponse(json_data)
