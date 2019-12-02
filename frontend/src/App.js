@@ -1,56 +1,57 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Table } from 'reactstrap';
+import axios from 'axios';
+const FILE_SERVICE_URL = 'http://localhost:8000/celery/files';
 
-class App extends Component {
-  state = {
-    files: []
-  };
 
-  async componentDidMount() {
-    try {
-      const res = await fetch('http://localhost:8000/celery/files');
-      const files = await res.json();
-      this.setState({
-        files
-      });
-    } catch (e) {
-      console.log(e);
-    }
-  }
+function App() {
+  const [data, setData] = useState({ files: [], isFetching: false });
 
-  render() {
-    return (
-      <Container>
-        <Row>
-          <Col>
-            <h1>Files</h1>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <Table>
-              <thead>
+  useEffect(() => {
+    const fetchFiles = async () => {
+      try {
+        setData({ files: data.files, isFetching: true });
+        const response = await axios.get(FILE_SERVICE_URL);
+        setData({ files: response.data, isFetching: false });
+      } catch (e) {
+        console.log(e);
+        setData({ files: data.files, isFetching: false });
+      }
+    };
+    fetchFiles();
+  }, []);
+
+  return (
+    <Container>
+      <Row>
+        <Col>
+          <h1>Files</h1>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <Table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Filename</th>
+                <th>Number of lines</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.files.map(f => (
                 <tr>
-                  <th>ID</th>
-                  <th>Filename</th>
-                  <th>Number of lines</th>
+                  <td>{f.id}</td>
+                  <td>{f.name}</td>
+                  <td>{f.line_count}</td>
                 </tr>
-              </thead>
-              <tbody>
-                {this.state.files.map(f => (
-                  <tr>
-                    <td>{f.id}</td>
-                    <td>{f.name}</td>
-                    <td>{f.line_count}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          </Col>
-        </Row>
-      </Container>
-    );
-  }
+              ))}
+            </tbody>
+          </Table>
+        </Col>
+      </Row>
+    </Container>
+  );
 }
 
 export default App;
