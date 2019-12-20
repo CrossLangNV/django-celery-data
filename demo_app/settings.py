@@ -130,7 +130,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-CELERY_BROKER_URL = 'pyamqp://guest:guest@localhost//'
+CELERY_BROKER_URL = 'pyamqp://guest:guest@rabbitmq//'
 
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_CACHE_BACKEND = 'django-cache'

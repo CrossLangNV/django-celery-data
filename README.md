@@ -13,3 +13,10 @@ Start django server with
 python manage.py runserver
 ```
 Listens on port 8000 by default.
+
+## Docker
+
+```
+docker-compose up -d
+```
+starts rabbitmq, django, celery and flower.
